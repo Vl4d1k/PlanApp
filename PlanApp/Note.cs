@@ -8,10 +8,10 @@ namespace PlanApp
 {
     class Note
     {
-        int number;
-        string description;
-        DateTime startDate;
-        DateTime endDate;
+        public int number; //номер 
+        public string description;//описание
+        public DateTime startDate; //дата начала задания
+        public DateTime endDate; // дата конца задания
 
         public Note(int _number, string _description, DateTime _startDate, DateTime _endDate)
         {
@@ -21,5 +21,7 @@ namespace PlanApp
             endDate = _endDate;
         }
 
+        public Note() { }
     }
+
 }
