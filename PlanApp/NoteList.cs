@@ -37,7 +37,7 @@ namespace PlanApp
             using (FileStream fstream = new FileStream(fileName, FileMode.OpenOrCreate))
             {
                 bf.Serialize(fstream, myList);
-                Console.WriteLine("Список сохранен");
+                Console.WriteLine("Список сохранен\n");
                 return;
             }
         }
@@ -49,7 +49,7 @@ namespace PlanApp
             using (var fstream = new FileStream(fileName, FileMode.OpenOrCreate))
             {
                 myList = (List<Note>)bf.Deserialize(fstream) ?? throw new Exception("Файл пуст");
-                Console.WriteLine("Список загружен");
+                Console.WriteLine("Список загружен\n");
                 return;
             }
 

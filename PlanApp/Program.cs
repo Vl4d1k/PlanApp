@@ -108,10 +108,14 @@ namespace PlanApp
                         Console.Clear();
                         break;
                     case "6":
+                        Console.Clear();
                         menadger.SaveNotes(myList);
+                        Console.ReadKey();
                         break;
                     case "7":
+                        Console.Clear();
                         menadger.LoadFromFile(ref myList);
+                        Console.ReadKey();
                         break;
                     case "0": return;
                     default: Console.WriteLine("\nНет такого номера\n"); break;
