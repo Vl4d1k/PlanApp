@@ -10,7 +10,7 @@ namespace PlanApp
     class Program
     {
         const string menu =
-                    "+----------------------------+" +
+                    "+---------------------------+" +
                     "\n+      Выбор операции:     +" +
                     "\n+--------------------------+" +
                     "\n+      1.Добавить задачу   +" +
@@ -19,6 +19,8 @@ namespace PlanApp
                     "\n+      4.Сортировать по    +" +
                     "\n+         дате начала      +" +
                     "\n+      5.Показать задачи   +" +
+                    "\n+      6.Сохранить задачи  +" +
+                    "\n+      7.Загрузить задачи  +" +
                     "\n+      0.Выход             +" +
                     "\n+--------------------------+";
         const string menuforediting = "Выбор поля:" +
@@ -29,7 +31,8 @@ namespace PlanApp
         static void Main(string[] args)
         {
             //переменная поиска
-            int keySearch;
+            string keySearch;
+
             bool isEnable = false;
             
             NoteList menadger = new NoteList();
@@ -53,7 +56,7 @@ namespace PlanApp
                             break;
                         }
                         Console.Write("Введите номер задачи: ");
-                        keySearch = int.Parse(Console.ReadLine());
+                        keySearch = Console.ReadLine();
                         if (menadger.RemoveNote(myList, keySearch)) Console.WriteLine("Задача удалена");
                         else Console.WriteLine("Задача не найдена");
                         break;
@@ -65,30 +68,31 @@ namespace PlanApp
                             break;
                         }
                         Console.Write("Введите номер задачи: ");
-                        keySearch = int.Parse(Console.ReadLine());
+                        keySearch = Console.ReadLine();
                         for (int i = 0; i < myList.Count; i++)
                         {
-                            if (myList[i].number == keySearch)
+                            if (myList[i].number == Convert.ToInt32(keySearch))
                                 isEnable = true;
                         }
                         if (isEnable)
                         {
                             Console.WriteLine(menuforediting);
-                            int keyEdit = int.Parse(Console.ReadLine());
+                            string keyEdit = Console.ReadLine();
                             menadger.EditNote(myList, keySearch, keyEdit);
                             Console.WriteLine("Задача изменена");
                         }
                         else Console.WriteLine("Задача не найдена");
                         break;
                     case "4":
-                        myList.Sort(delegate (Note nt1, Note nt2)
-                        { return nt1.startDate.CompareTo(nt2.startDate); });
+                        myList.Sort((Note nt1, Note nt2) => nt1.startDate.CompareTo(nt2.startDate));
                         break;
                     case "5":
                         Console.Clear();
                         if (myList.Count == 0)
                         {
                             Console.WriteLine("Нет записей");
+                            Console.ReadKey();
+                            Console.Clear();
                             break;
                         }
                         for (int k = 0; k < myList.Count; k++)
@@ -100,11 +104,17 @@ namespace PlanApp
                             Console.WriteLine("Дата конца: {0}", myList[k].endDate);
                             Console.WriteLine("+-----------------------------------+");
                         }
+                        Console.ReadKey();
+                        Console.Clear();
                         break;
-                    case "6": break;
-                    case "7": break;
+                    case "6":
+                        menadger.SaveNotes(myList);
+                        break;
+                    case "7":
+                        menadger.LoadFromFile(ref myList);
+                        break;
                     case "0": return;
-                    default: Console.WriteLine("/nНет такого номера/n"); break;
+                    default: Console.WriteLine("\nНет такого номера\n"); break;
                 }
             }
         }

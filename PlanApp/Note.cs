@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace PlanApp
 {
+    [Serializable]
     class Note
     {
         public int number; //номер 

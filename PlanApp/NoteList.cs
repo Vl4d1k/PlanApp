@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace PlanApp
 {
@@ -16,7 +18,7 @@ namespace PlanApp
         DateTime startDate;
         //переменная для хранения даты окончания
         DateTime endDate;
-        DateTime date = new DateTime();
+        readonly DateTime date = new DateTime();
 
         public void AddNote(List<Note> notes)
         {
@@ -27,11 +29,37 @@ namespace PlanApp
             notes.Add(new Note(number, description, startDate, endDate));
         }
 
-        public bool RemoveNote(List<Note> myList, int keySearch)
+        public void SaveNotes(List<Note> myList)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            string fileName = "myNotes";
+            var FileName = Directory.GetCurrentDirectory() + "/" + fileName;
+            using (FileStream fstream = new FileStream(fileName, FileMode.OpenOrCreate))
+            {
+                bf.Serialize(fstream, myList);
+                Console.WriteLine("Список сохранен");
+                return;
+            }
+        }
+        public void LoadFromFile(ref List<Note> myList)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            string fileName = "myNotes";
+            var FileName = Directory.GetCurrentDirectory() + "/" + fileName;
+            using (var fstream = new FileStream(fileName, FileMode.OpenOrCreate))
+            {
+                myList = (List<Note>)bf.Deserialize(fstream) ?? throw new Exception("Файл пуст");
+                Console.WriteLine("Список загружен");
+                return;
+            }
+
+        }
+
+        public bool RemoveNote(List<Note> myList, string keySearch)
         {
             for (int i = 0; i < myList.Count; i++)
             {
-                if (myList[i].number == keySearch)
+                if (myList[i].number == Convert.ToInt32(keySearch))
                 {
                     myList.Remove(myList[i]);
                     return true;
@@ -40,13 +68,13 @@ namespace PlanApp
             return false;
         }
 
-        public bool EditNote(List<Note> myList, int keySearch, int keyEdit)
+        public bool EditNote(List<Note> myList, string keySearch, string keyEdit)
         {
             for (int i = 0; i < myList.Count; i++)
             {
-                if (myList[i].number == keySearch)
+                if (myList[i].number == Convert.ToInt32(keySearch))
                 {
-                    switch (Convert.ToString(keyEdit))
+                    switch (keyEdit)
                     {
                         case "1":
                             myList[i].number = SetNumber(number);
@@ -60,6 +88,7 @@ namespace PlanApp
                         case "4":
                             myList[i].endDate = SetEndDate(date, startDate);
                             break;
+                        default: Console.WriteLine("\nНет такого номера\n"); break;
                     }
                     return true;
                 }
@@ -116,6 +145,7 @@ namespace PlanApp
                 {
                     Console.Write("Введите номер задачи: ");
                     num = int.Parse(Console.ReadLine());
+                    if (num < 0 || num == 0) throw new Exception("Неверный ввод. Попробуйте еще раз!");
                     break;
                 }
                 catch (Exception e)
